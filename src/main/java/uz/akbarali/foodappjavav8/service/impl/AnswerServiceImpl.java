@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import uz.akbarali.foodappjavav8.model.template.AbsEntity;
 import uz.akbarali.foodappjavav8.payload.ApiResponse;
 import uz.akbarali.foodappjavav8.projection.IdProjection;
+import uz.akbarali.foodappjavav8.projection.ProductProjection;
 import uz.akbarali.foodappjavav8.repository.base.BaseRepository;
 import uz.akbarali.foodappjavav8.service.AnswerService;
 
@@ -106,6 +107,8 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public <K extends BaseRepository<O>, O extends AbsEntity, P extends IdProjection> HttpEntity<ApiResponse> getAllObject(K repository) {
         final List<P> all = repository.getAll();
+
+
         if (all.size() >= 1) {
             return answer("SUCCESS", true, all, HttpStatus.OK);
         } else
