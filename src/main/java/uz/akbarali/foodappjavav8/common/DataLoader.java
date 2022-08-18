@@ -77,7 +77,7 @@ public class DataLoader implements CommandLineRunner {
             final Product saveSalad = productRepository.save(new Product("Salad","Salad","Salad DescUz", "Salad  DescRu", 10, saveSaladAtt, saveCategoryFood));
             final Product saveWater = productRepository.save(new Product("Water","Water","Water DescUz", "Water  DescRu", 10, saveWaterAtt, saveCategoryWater));
         }
-//        runner();
+        runner();
     }
 
     private void runner() throws InterruptedException {
@@ -89,13 +89,13 @@ public class DataLoader implements CommandLineRunner {
 //        System.out.println(forObjectTest);
         while (true) {
             String forObject = restTemplate.getForObject(
-                    "https://food-react-app-java.herokuapp.com/api/test/hello",
+                    "https://food-telegram-bot-java.herokuapp.com/api/test/hello",
                     String.class
             );
-            restTemplate.getForObject(
-                    "https://food-react-app-bot.herokuapp.com/",
-                    String.class
-            );
+//            restTemplate.getForObject(
+//                    "https://food-react-app-bot.herokuapp.com/",
+//                    String.class
+//            );
             System.out.println(forObject);
 //            System.out.println(forObject2);
             WebAppInfo webAppInfo = new WebAppInfo();
