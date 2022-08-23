@@ -8,7 +8,7 @@ public interface CategoryProjection extends IdProjection {
     String getName();
 
         @Value("#{@productRepository.getAllFood(target.id)}")
-    List<ProductProjection> getFoods();
+    List<ProductProjection> getProducts();
 //    @Value("#{@productServiceImpl.allFoods(target.foods)}")
 //    List<ProductProjection> getFoods();
 }
