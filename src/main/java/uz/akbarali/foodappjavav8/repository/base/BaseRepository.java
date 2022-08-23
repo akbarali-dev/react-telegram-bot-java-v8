@@ -11,12 +11,13 @@ import java.util.UUID;
 
 public interface BaseRepository<T extends AbsEntity> extends JpaRepository<T, UUID>, JpaSpecificationExecutor<T> {
 
-@Query(nativeQuery = true, value = "select cast(p.id as varchar) as id,\n" +
-        "       name_uz               as name,\n" +
-        "       price,\n" +
-        "       ac.data\n" +
-        "from product p\n" +
-        "         join attachments a on a.id = p.attachment_id\n" +
-        "         join attachment_contents ac on a.id = ac.attachment_id")
-     <K extends IdProjection> List<K> getAll();
+
+    @Query(nativeQuery = true, value = "select cast(p.id as varchar) as id,\n" +
+            "       name_uz               as name,\n" +
+            "       price,\n" +
+            "       ac.data\n" +
+            "from product p\n" +
+            "         join attachments a on a.id = p.attachment_id\n" +
+            "         join attachment_contents ac on a.id = ac.attachment_id")
+    <K extends IdProjection> List<K> getAll();
 }

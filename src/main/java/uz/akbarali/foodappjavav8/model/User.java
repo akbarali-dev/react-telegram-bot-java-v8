@@ -22,4 +22,8 @@ public class User extends AbsEntity {
     private Location location;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public User(Role role) {
+        this.role = role;
+    }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import uz.akbarali.foodappjavav8.model.template.AbsEntity;
 
 import javax.persistence.Entity;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
@@ -16,4 +17,7 @@ import javax.persistence.Entity;
 public class Category extends AbsEntity {
     private String nameUz;
     private String nameRu;
+
+
+
 }

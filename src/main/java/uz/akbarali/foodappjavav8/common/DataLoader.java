@@ -6,6 +6,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
+import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
+import uz.akbarali.foodappjavav8.bot.service.UserManageService;
+import uz.akbarali.foodappjavav8.bot.util.UserUtil;
 import uz.akbarali.foodappjavav8.model.Attachment;
 import uz.akbarali.foodappjavav8.model.AttachmentContent;
 import uz.akbarali.foodappjavav8.model.Category;
@@ -36,10 +39,27 @@ public class DataLoader implements CommandLineRunner {
     AttachmentRepository attachmentRepository;
 
     @Autowired
-    AttachmentContentRepository  attachmentContentRepository;
+    AttachmentContentRepository attachmentContentRepository;
+    @Autowired
+    UserManageService userManageService;
+
+    @Autowired
+    UserUtil userUtil;
 
     @Override
     public void run(String... args) throws Exception {
+
+//        System.out.println("start");
+//
+//        UserActivityDto userActivityDto = userManageService.alreadyExistFromService(234L);
+//        System.out.println(userActivityDto.getRound());
+//        userActivityDto.setRound(12);
+//        System.out.println(userUtil.activityMap.get(234L).getRound());
+//        Thread.sleep(700);
+//        System.out.println("700 thread ended ...");
+//        System.out.println(userUtil.activityMap.get(234L).getRound());
+
+
         if (initMode.equals("always")) {
             final Category saveCategoryFood = categoryRepository.save(new Category("food", "food"));
             final Category saveCategoryWater = categoryRepository.save(new Category("water", "water"));
@@ -69,15 +89,15 @@ public class DataLoader implements CommandLineRunner {
             final AttachmentContent saveContentSalad = attachmentContentRepository.save(new AttachmentContent(byteSalad, saveSaladAtt));
             final AttachmentContent saveContentWater = attachmentContentRepository.save(new AttachmentContent(byteWater, saveWaterAtt));
 
-            final Product saveBurger = productRepository.save(new Product("Burger","Burger","Burger DescUz", "Burger  DescRu", 10, saveBurgerAtt, saveCategoryFood));
-            final Product saveCoca = productRepository.save(new Product("Coca","Coca","Coca DescUz", "Coca  DescRu", 10, saveCocaAtt, saveCategoryWater));
-            final Product saveIceCream = productRepository.save(new Product("IceCream","IceCream","IceCream DescUz", "IceCream  DescRu", 10, saveIceCreamAtt, saveCategoryDessert));
-            final Product saveKebab = productRepository.save(new Product("Kebab","Kebab","Kebab DescUz", "Kebab  DescRu", 10, saveKebabAtt, saveCategoryFood));
-            final Product savePizza = productRepository.save(new Product("Pizza","Pizza","Pizza DescUz", "Pizza  DescRu", 10, savePizzaAtt, saveCategoryFood));
-            final Product saveSalad = productRepository.save(new Product("Salad","Salad","Salad DescUz", "Salad  DescRu", 10, saveSaladAtt, saveCategoryFood));
-            final Product saveWater = productRepository.save(new Product("Water","Water","Water DescUz", "Water  DescRu", 10, saveWaterAtt, saveCategoryWater));
+            final Product saveBurger = productRepository.save(new Product("Burger", "Burger", "Burger DescUz", "Burger  DescRu", 10, saveBurgerAtt, saveCategoryFood));
+            final Product saveCoca = productRepository.save(new Product("Coca", "Coca", "Coca DescUz", "Coca  DescRu", 10, saveCocaAtt, saveCategoryWater));
+            final Product saveIceCream = productRepository.save(new Product("IceCream", "IceCream", "IceCream DescUz", "IceCream  DescRu", 10, saveIceCreamAtt, saveCategoryDessert));
+            final Product saveKebab = productRepository.save(new Product("Kebab", "Kebab", "Kebab DescUz", "Kebab  DescRu", 10, saveKebabAtt, saveCategoryFood));
+            final Product savePizza = productRepository.save(new Product("Pizza", "Pizza", "Pizza DescUz", "Pizza  DescRu", 10, savePizzaAtt, saveCategoryFood));
+            final Product saveSalad = productRepository.save(new Product("Salad", "Salad", "Salad DescUz", "Salad  DescRu", 10, saveSaladAtt, saveCategoryFood));
+            final Product saveWater = productRepository.save(new Product("Water", "Water", "Water DescUz", "Water  DescRu", 10, saveWaterAtt, saveCategoryWater));
         }
-        runner();
+//        runner();
     }
 
     private void runner() throws InterruptedException {
@@ -113,7 +133,6 @@ public class DataLoader implements CommandLineRunner {
         }
         return null;
     }
-
 
 
 }

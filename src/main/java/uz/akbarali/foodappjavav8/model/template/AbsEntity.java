@@ -27,7 +27,15 @@ public abstract class AbsEntity {
     @UpdateTimestamp
     @Column(nullable = false)
     private Timestamp updatedAt;
-//
+
+    public AbsEntity() {
+    }
+
+    public AbsEntity(UUID id) {
+        this.id = id;
+    }
+
+    //
 //    @CreatedBy
 //    @Column(name = "created_by_id")
 //    private UUID createdBy;

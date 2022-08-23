@@ -10,4 +10,5 @@ public class FoodAppJavaV8Application {
         SpringApplication.run(FoodAppJavaV8Application.class, args);
     }
 
+
 }

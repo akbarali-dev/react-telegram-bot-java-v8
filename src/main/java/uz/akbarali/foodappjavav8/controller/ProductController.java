@@ -1,5 +1,6 @@
 package uz.akbarali.foodappjavav8.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +10,10 @@ import uz.akbarali.foodappjavav8.payload.ApiResponse;
 import uz.akbarali.foodappjavav8.repository.ProductRepository;
 import uz.akbarali.foodappjavav8.service.ProductService;
 //@CrossOrigin(origins = "http://localhost:3000")
+@ApiOperation("FOOD CRUD")
 @RestController
 @RequestMapping("/api/v1/product")
+
 public class ProductController {
     @Autowired
     ProductRepository productRepository;
@@ -18,6 +21,7 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+    @ApiOperation("hamma category larni olish va category bilan birga productlarni olish")
     @GetMapping
     public HttpEntity<ApiResponse> getAllProduct(){
         return productService.getAllProduct();
