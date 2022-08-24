@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import uz.akbarali.foodappjavav8.dto.ProductDto;
@@ -31,9 +32,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public HttpEntity<ApiResponse> getAllProduct() {
 //        return answerService.answer("SUCCESS", true, productRepository.getAll(), HttpStatus.OK);
-
-
         return answerService.getAllObject(categoryRepository);
+//        return ResponseEntity.status(200).body(productRepository.getAllFoodV2()));
+
+
+    }
+
+    public HttpEntity<?> getAllProductV2() {
+//        return answerService.answer("SUCCESS", true, productRepository.getAll(), HttpStatus.OK);
+//        return answerService.getAllObject(categoryRepository);
+        return ResponseEntity.status(200).body(productRepository.getAllFoodV2());
+
+
     }
 
     @Override

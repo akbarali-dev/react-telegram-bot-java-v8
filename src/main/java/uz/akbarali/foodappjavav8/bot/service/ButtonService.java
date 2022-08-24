@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class ButtonService {
     public ReplyKeyboard buttons() {
@@ -21,7 +22,8 @@ public class ButtonService {
         KeyboardRow row = new KeyboardRow();
 
         KeyboardButton btn = new KeyboardButton();
-        WebAppInfo webAppInfo = new WebAppInfo("https://food-react-app-bot.herokuapp.com/");
+        String orderId = "fssdf";
+        WebAppInfo webAppInfo = new WebAppInfo("https://food-react-app-bot.herokuapp.com/order?orderId=" + orderId);
         btn.setWebApp(webAppInfo);
         btn.setText("foods");
         row.add(btn);
