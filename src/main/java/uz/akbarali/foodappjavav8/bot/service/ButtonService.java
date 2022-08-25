@@ -6,13 +6,16 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
+import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static uz.akbarali.foodappjavav8.bot.util.MessageText.*;
+
 @Service
 public class ButtonService {
-    public ReplyKeyboard buttons() {
+    public ReplyKeyboard buttons(UserActivityDto userActivityDto) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         keyboardMarkup.setResizeKeyboard(true);
         keyboardMarkup.setOneTimeKeyboard(true);
@@ -21,19 +24,27 @@ public class ButtonService {
         keyboardMarkup.setKeyboard(keyboardRows);
         KeyboardRow row = new KeyboardRow();
 
-        KeyboardButton btn = new KeyboardButton();
-        String orderId = "fssdf";
-        WebAppInfo webAppInfo = new WebAppInfo("https://food-react-app-bot.herokuapp.com/order?orderId=" + orderId);
-        btn.setWebApp(webAppInfo);
-        btn.setText("foods");
-        row.add(btn);
-
-        KeyboardButton btn2 = new KeyboardButton();
-        btn2.setWebApp(new WebAppInfo("https://food-react-app-java.herokuapp.com/api/v1/category-test"));
-        btn2.setText("test");
-        row.add(btn2);
-
-        keyboardRows.add(row);
+        switch (userActivityDto.getRound()) {
+            case 0:
+                row = new KeyboardRow();
+                String orderId = "fssdf";
+                WebAppInfo webAppInfo = new WebAppInfo("https://food-react-bot.herokuapp.com/");
+//                WebAppInfo webAppInfo = new WebAppInfo("https://food-react-app-bot.herokuapp.com/order?orderId=" + orderId);
+                KeyboardButton btn = new KeyboardButton();
+                btn.setWebApp(webAppInfo);
+                btn.setText(menuNewUz);
+                row.add(btn);
+                keyboardRows.add(row);
+                row = new KeyboardRow();
+                row.add(menuUz);
+                row.add(informationUz);
+                keyboardRows.add(row);
+                row = new KeyboardRow();
+                row.add(contactUz);
+                row.add(languageUz);
+                keyboardRows.add(row);
+                break;
+        }
         return keyboardMarkup;
     }
 }

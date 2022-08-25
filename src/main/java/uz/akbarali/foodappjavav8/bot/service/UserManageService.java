@@ -42,7 +42,7 @@ public class UserManageService {
             UserActivityDto userActivityDto = alreadyExistFromService(update.getMessage().getChatId());
 
             if (userActivityDto.getRole().equals(Role.USER)) {
-
+                userService.main(update, sendMessage, userActivityDto);
             }
         }
     }
@@ -55,7 +55,7 @@ public class UserManageService {
         }
         System.out.println("databaseda mavjud emas");
         User user = userRepository.save(new User(Role.USER));
-         UserActivity userActivity = new UserActivity(chatId, user);
+        UserActivity userActivity = new UserActivity(chatId, user);
         UserActivity save = userActivityRepository.save(userActivity);
         return currentUserAddServer(save);
     }
@@ -74,7 +74,7 @@ public class UserManageService {
         new Thread(() -> {
             try {
                 System.out.println("thread start....");
-                Thread.sleep(1000);
+                Thread.sleep(60*1000);
                 System.out.println("thread end....");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
