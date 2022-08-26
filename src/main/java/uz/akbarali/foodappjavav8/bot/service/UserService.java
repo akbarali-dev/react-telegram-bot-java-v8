@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
-
+import static uz.akbarali.foodappjavav8.bot.util.MessageText.*;
 @Service
 public class UserService {
 
@@ -36,10 +36,34 @@ public class UserService {
             mainPage(sendMessage, userActivityDto);
             return;
         }
+        switch (text) {
+            case menuUz:
+                sendMessage.setText(menuUz + " hali ish jarayonida");
+                break;
+            case informationUz:
+                sendMessage.setText(informationUz + " hali ish jarayonida");
+                break;
+            case contactUz:
+                sendMessage.setText(contactUz + " hali ish jarayonida");
+                break;
+            case languageUz:
+            case languageRu:
+                sendMessage.setText(languageRu + " hali ish jarayonida");
+                break;
+        }
     }
 
     private void mainPage(SendMessage sendMessage, UserActivityDto userActivityDto) {
         sendMessage.setReplyMarkup(buttonService.buttons(userActivityDto));
         sendMessage.setText("Bo'limlardan birini tanlang");
+//        label:
+//        {
+//            if (userActivityDto == null) {
+//                return;
+//            } else {
+//                break label;
+//            }
+//        }
+
     }
 }
