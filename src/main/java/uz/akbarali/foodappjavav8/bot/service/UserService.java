@@ -10,8 +10,12 @@ import static uz.akbarali.foodappjavav8.bot.util.MessageText.*;
 @Service
 public class UserService {
 
-    @Autowired
+    final
     ButtonService buttonService;
+
+    public UserService(ButtonService buttonService) {
+        this.buttonService = buttonService;
+    }
 
     public void main(Update update, SendMessage sendMessage, UserActivityDto userActivityDto) {
         if (update.hasMessage()) {

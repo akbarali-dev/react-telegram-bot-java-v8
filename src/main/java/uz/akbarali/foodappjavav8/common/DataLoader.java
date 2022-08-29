@@ -9,14 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
 import uz.akbarali.foodappjavav8.bot.service.UserManageService;
 import uz.akbarali.foodappjavav8.bot.util.UserUtil;
-import uz.akbarali.foodappjavav8.model.Attachment;
-import uz.akbarali.foodappjavav8.model.AttachmentContent;
-import uz.akbarali.foodappjavav8.model.Category;
-import uz.akbarali.foodappjavav8.model.Product;
-import uz.akbarali.foodappjavav8.repository.AttachmentContentRepository;
-import uz.akbarali.foodappjavav8.repository.AttachmentRepository;
-import uz.akbarali.foodappjavav8.repository.CategoryRepository;
-import uz.akbarali.foodappjavav8.repository.ProductRepository;
+import uz.akbarali.foodappjavav8.model.*;
+import uz.akbarali.foodappjavav8.repository.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,9 +40,14 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     UserUtil userUtil;
 
+    @Autowired
+    UserActivityRepository userActivityRepository;
+
     @Override
     public void run(String... args) throws Exception {
-
+        for (UserActivity userActivity : userActivityRepository.findAll()) {
+            System.out.println(userActivity.getChatId() + "; time: " + userActivity.getCreatedAt());
+        }
 //        System.out.println("start");
 //
 //        UserActivityDto userActivityDto = userManageService.alreadyExistFromService(234L);
@@ -58,7 +57,6 @@ public class DataLoader implements CommandLineRunner {
 //        Thread.sleep(700);
 //        System.out.println("700 thread ended ...");
 //        System.out.println(userUtil.activityMap.get(234L).getRound());
-
 
         if (initMode.equals("always")) {
             final Category saveCategoryFood = categoryRepository.save(new Category("food", "food"));
