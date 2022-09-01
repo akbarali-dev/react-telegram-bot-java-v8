@@ -2,9 +2,7 @@ package uz.akbarali.foodappjavav8.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import uz.akbarali.foodappjavav8.model.Product;
-import uz.akbarali.foodappjavav8.projection.IdProjection;
-import uz.akbarali.foodappjavav8.projection.ProductProjection;
-import uz.akbarali.foodappjavav8.projection.ProductProjectionV2;
+import uz.akbarali.foodappjavav8.projection.*;
 import uz.akbarali.foodappjavav8.repository.base.BaseRepository;
 
 import java.util.List;
@@ -43,6 +41,28 @@ public interface ProductRepository extends BaseRepository<Product> {
             "         join attachment_contents ac on a.id = ac.attachment_id\n" +
             "         join category c on c.id = p.category_id")
     List<ProductProjectionV2> getAllFoodV2();
+
+    @Query(nativeQuery = true,
+    value = "select p.name_uz as name\n" +
+            "from product p\n" +
+            "         join category c on c.id = p.category_id\n" +
+            "where c.name_uz = :categoryName or c.name_ru = :categoryName")
+    List<ProductBotProjection> getAllByCategoryProductBot(String categoryName);
+
+    @Query(
+            nativeQuery = true,
+            value = "select cast(p.id as varchar) as productId,\n" +
+                    "       p.name_uz             as productName,\n" +
+                    "       cast(c.id as varchar) as categoryId,\n" +
+                    "       c.name_uz             as categoryName,\n" +
+                    "       ac.data               as image,\n" +
+                    "       p.price " +
+                    "from product p\n" +
+                    "         join category c on c.id = p.category_id\n" +
+                    "         join attachments a on a.id = p.attachment_id\n" +
+                    "         join attachment_contents ac on a.id = ac.attachment_id"
+    )
+    List<ProductCategoryBotProjection> getAllProductAndCategory();
 
 
 }

@@ -1,6 +1,5 @@
 package uz.akbarali.foodappjavav8.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +12,6 @@ import org.springframework.validation.FieldError;
 import uz.akbarali.foodappjavav8.model.template.AbsEntity;
 import uz.akbarali.foodappjavav8.payload.ApiResponse;
 import uz.akbarali.foodappjavav8.projection.IdProjection;
-import uz.akbarali.foodappjavav8.projection.ProductProjection;
 import uz.akbarali.foodappjavav8.repository.base.BaseRepository;
 import uz.akbarali.foodappjavav8.service.AnswerService;
 
@@ -22,8 +20,12 @@ import java.util.*;
 @Service
 public class AnswerServiceImpl implements AnswerService {
 
-    @Autowired
+    final
     BaseRepository<?> baseRepository;
+
+    public AnswerServiceImpl(BaseRepository<?> baseRepository) {
+        this.baseRepository = baseRepository;
+    }
 
     @Override
     public HttpEntity<ApiResponse> answer(String message, boolean isSuccess, Object data, HttpStatus status) {

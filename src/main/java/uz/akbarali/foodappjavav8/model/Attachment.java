@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Entity(name = "attachments")
 public class Attachment extends AbsEntity {
     private String fileName;

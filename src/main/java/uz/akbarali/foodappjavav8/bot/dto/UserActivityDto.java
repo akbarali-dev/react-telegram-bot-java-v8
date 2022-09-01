@@ -16,4 +16,13 @@ public class UserActivityDto {
     private int round;
     private UUID userId;
     private Role role;
+    private UUID selectFood;
+
+    public UserActivityDto(UUID id, Long chatId, int round, UUID userId, Role role) {
+        this.id = id;
+        this.chatId = chatId;
+        this.round = round;
+        this.userId = userId;
+        this.role = role;
+    }
 }

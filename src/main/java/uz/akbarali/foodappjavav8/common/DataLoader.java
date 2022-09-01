@@ -5,12 +5,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
-import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
 import uz.akbarali.foodappjavav8.bot.service.UserManageService;
-import uz.akbarali.foodappjavav8.bot.util.UserUtil;
+import uz.akbarali.foodappjavav8.bot.util.Util;
 import uz.akbarali.foodappjavav8.model.*;
 import uz.akbarali.foodappjavav8.repository.*;
+import static uz.akbarali.foodappjavav8.bot.util.Util.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,16 +37,16 @@ public class DataLoader implements CommandLineRunner {
     UserManageService userManageService;
 
     @Autowired
-    UserUtil userUtil;
+    Util userUtil;
 
     @Autowired
     UserActivityRepository userActivityRepository;
 
     @Override
     public void run(String... args) throws Exception {
-        for (UserActivity userActivity : userActivityRepository.findAll()) {
-            System.out.println(userActivity.getChatId() + "; time: " + userActivity.getCreatedAt());
-        }
+//        for (UserActivity userActivity : userActivityRepository.findAll()) {
+//            System.out.println(userActivity.getChatId() + "; time: " + userActivity.getCreatedAt());
+//        }
 //        System.out.println("start");
 //
 //        UserActivityDto userActivityDto = userManageService.alreadyExistFromService(234L);
@@ -95,7 +94,11 @@ public class DataLoader implements CommandLineRunner {
             final Product saveSalad = productRepository.save(new Product("Salad", "Salad", "Salad DescUz", "Salad  DescRu", 10, saveSaladAtt, saveCategoryFood));
             final Product saveWater = productRepository.save(new Product("Water", "Water", "Water DescUz", "Water  DescRu", 10, saveWaterAtt, saveCategoryWater));
         }
+        getAllData();
         runner();
+    }
+    public void getAllData(){
+        getAllData = productRepository.getAllProductAndCategory();
     }
 
     private void runner() throws InterruptedException {

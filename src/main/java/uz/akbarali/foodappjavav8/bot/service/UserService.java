@@ -1,63 +1,131 @@
 package uz.akbarali.foodappjavav8.bot.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
+import uz.akbarali.foodappjavav8.common.GetAllData;
+import uz.akbarali.foodappjavav8.projection.ProductCategoryBotProjection;
+import uz.akbarali.foodappjavav8.repository.CategoryRepository;
+import uz.akbarali.foodappjavav8.repository.ProductRepository;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Set;
+
 import static uz.akbarali.foodappjavav8.bot.util.MessageText.*;
+
 @Service
 public class UserService {
+    final
+    GetAllData getAllData;
 
     final
     ButtonService buttonService;
+    final CategoryRepository categoryRepository;
+    final ProductRepository productRepository;
 
-    public UserService(ButtonService buttonService) {
+    public UserService(ButtonService buttonService, CategoryRepository categoryRepository,
+                       ProductRepository productRepository,
+                       GetAllData getAllData) {
         this.buttonService = buttonService;
+        this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+        this.getAllData = getAllData;
     }
 
-    public void main(Update update, SendMessage sendMessage, UserActivityDto userActivityDto) {
+    public void main(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, SendPhoto sendPhoto) {
         if (update.hasMessage()) {
-            mainMessage(update, sendMessage, userActivityDto);
+            mainMessage(update, sendMessage, userActivityDto, sendPhoto);
         } else if (update.hasCallbackQuery()) {
 
         }
     }
 
-    private void mainMessage(Update update, SendMessage sendMessage, UserActivityDto userActivityDto) {
+    private void mainMessage(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, SendPhoto sendPhoto) {
         Message message = update.getMessage();
         if (message.hasText()) {
-            mainText(update, sendMessage, userActivityDto);
+            mainText(update, sendMessage, userActivityDto, sendPhoto);
         }
     }
 
-    private void mainText(Update update, SendMessage sendMessage, UserActivityDto userActivityDto) {
+    private void mainText(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, SendPhoto sendPhoto) {
         final Long chatId = update.getMessage().getChatId();
         final String text = update.getMessage().getText();
         sendMessage.setChatId(chatId.toString());
-        if (text.equals("/start")) {
+        if (text.equals("/start") || text.equals(mainUz)) {
             mainPage(sendMessage, userActivityDto);
             return;
         }
         switch (text) {
             case menuUz:
-                sendMessage.setText(menuUz + " hali ish jarayonida");
-                break;
+                showCategory(sendMessage, userActivityDto);
+                return;
             case informationUz:
                 sendMessage.setText(informationUz + " hali ish jarayonida");
-                break;
+                return;
             case contactUz:
                 sendMessage.setText(contactUz + " hali ish jarayonida");
-                break;
+                return;
             case languageUz:
             case languageRu:
                 sendMessage.setText(languageRu + " hali ish jarayonida");
-                break;
+                return;
         }
+        switch (userActivityDto.getRound()) {
+            case 1:
+                final List<String> productByCategoryName = getAllData.gelAllProductByCategoryName(text);
+                if (productByCategoryName.size() == 0) {
+                    sendMessage.setText(emptyProductUz);
+                    return;
+                }
+                userActivityDto.setRound(2);
+                sendMessage.setReplyMarkup(buttonService.productButton(productByCategoryName));
+                sendMessage.setText(selectMenuUz);
+                return;
+            case 2:
+                final ProductCategoryBotProjection productByName = getAllData.getProductByName(text);
+                if (productByName == null) {
+                    sendMessage.setText(errorMessageUz);
+                    return;
+                }
+                InputStream inputStream = new ByteArrayInputStream(productByName.getImage());
+                sendPhoto.setChatId(chatId.toString());
+                sendPhoto.setPhoto(new InputFile(inputStream, "image"));
+                String caption = "";
+                caption += "*Categoriya:* " + productByName.getCategoryName() + "\n" +
+                        "*Nomi:* " + productByName.getProductName() + "\n" +
+                        "*Narxi*: " + productByName.getPrice();
+                sendPhoto.setCaption(caption);
+                sendPhoto.setParseMode("markdown");
+                sendMessage.setChatId("0");
+                return;
+        }
+
+    }
+
+    private void showCategory(SendMessage sendMessage, UserActivityDto userActivityDto) {
+        if (userActivityDto.getRound() != 0) {
+            sendMessage.setText(errorMessageUz);
+            return;
+        }
+        final Set<String> allCategory = getAllData.getAllCategory();
+        if (allCategory.size() == 0) {
+            sendMessage.setText(emptyCategoryUz);
+            return;
+        }
+        userActivityDto.setRound(1);
+        sendMessage.setReplyMarkup(buttonService.categoryButtons(allCategory));
+        sendMessage.setText(menuUz);
     }
 
     private void mainPage(SendMessage sendMessage, UserActivityDto userActivityDto) {
+
+        userActivityDto.setRound(0);
         sendMessage.setReplyMarkup(buttonService.buttons(userActivityDto));
         sendMessage.setText("Bo'limlardan birini tanlang");
 //        label:

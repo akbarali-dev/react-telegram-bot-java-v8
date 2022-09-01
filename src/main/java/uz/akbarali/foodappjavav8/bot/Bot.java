@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import uz.akbarali.foodappjavav8.bot.service.ButtonService;
@@ -42,13 +43,16 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         SendMessage sendMessage = new SendMessage();
+        SendPhoto sendPhoto = new SendPhoto();
         userManageService.manage(update, sendMessage, null,
                 null, null,
-                null, null);
+                sendPhoto, null);
         try {
             if (sendMessage.getChatId() != null && !sendMessage.getChatId().equals("0")) {
                 execute(sendMessage);
             }
+            if (sendPhoto.getChatId()!=null && !sendPhoto.getChatId().equals("0"))
+                execute(sendPhoto);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }

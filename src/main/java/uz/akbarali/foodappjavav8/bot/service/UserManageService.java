@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
-import uz.akbarali.foodappjavav8.bot.util.UserUtil;
+import uz.akbarali.foodappjavav8.bot.util.Util;
 import uz.akbarali.foodappjavav8.model.User;
 import uz.akbarali.foodappjavav8.model.UserActivity;
 import uz.akbarali.foodappjavav8.model.enums.Role;
@@ -19,12 +19,11 @@ import uz.akbarali.foodappjavav8.repository.UserRepository;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.TimerTask;
 
 @Service
 public class UserManageService {
     @Autowired
-    UserUtil userUtil;
+    Util userUtil;
 
     @Autowired
     UserRepository userRepository;
@@ -42,7 +41,7 @@ public class UserManageService {
             UserActivityDto userActivityDto = alreadyExistFromService(update.getMessage().getChatId());
 
             if (userActivityDto.getRole().equals(Role.USER)) {
-                userService.main(update, sendMessage, userActivityDto);
+                userService.main(update, sendMessage, userActivityDto, sendPhoto);
             }
         }
     }
@@ -74,7 +73,7 @@ public class UserManageService {
         new Thread(() -> {
             try {
                 System.out.println("thread start....");
-                Thread.sleep(60*1000);
+                Thread.sleep(60*10000);
                 System.out.println("thread end....");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

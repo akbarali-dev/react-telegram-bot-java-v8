@@ -2,6 +2,7 @@ package uz.akbarali.foodappjavav8.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import uz.akbarali.foodappjavav8.model.Category;
+import uz.akbarali.foodappjavav8.projection.CategoryProductProjection;
 import uz.akbarali.foodappjavav8.projection.CategoryProjection;
 import uz.akbarali.foodappjavav8.repository.base.BaseRepository;
 
@@ -12,8 +13,12 @@ public interface CategoryRepository extends BaseRepository<Category> {
     @Query(nativeQuery = true, value = "select cast(id as varchar),\n" +
             "    name_uz as name\n" +
             "from category")
-    List<CategoryProjection> getAll();
+    List<CategoryProductProjection> getAll();
 
+    @Query(nativeQuery = true, value = "select cast(id as varchar),\n" +
+            "    name_uz as name\n" +
+            "from category")
+    List<CategoryProjection> getAllCategory();
 //    @Override
 //    @Query(nativeQuery = true, value = "select cast(c.id as varchar),\n" +
 //            "       c.name_uz as name,\n" +
