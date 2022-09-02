@@ -12,20 +12,28 @@ import uz.akbarali.foodappjavav8.repository.ProductRepository;
 import uz.akbarali.foodappjavav8.service.ProductService;
 import uz.akbarali.foodappjavav8.service.impl.ProductServiceImpl;
 
-@CrossOrigin(origins = "http://localhost:3000")
-@ApiOperation("FOOD CRUD")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/product")
 
 public class ProductController {
-    @Autowired
+    final
     ProductRepository productRepository;
 
-    @Autowired
+    final
     ProductService productService;
 
-    @Autowired
+    final
     ProductServiceImpl productServiceImpl;
+
+    public ProductController(ProductRepository productRepository, ProductService productService, ProductServiceImpl productServiceImpl) {
+        this.productRepository = productRepository;
+        this.productService = productService;
+        this.productServiceImpl = productServiceImpl;
+    }
+    @ApiOperation("hamma category larni olish va category bilan birga productlarni olish")
+    @GetMapping
+    public HttpEntity<?> getAllProduct(){
 
 //    @ApiOperation("hamma category larni olish va category bilan birga productlarni olish")
 //    @GetMapping
@@ -34,9 +42,6 @@ public class ProductController {
 //    }
 
 
-    @ApiOperation("hamma category larni olish va category bilan birga productlarni olish")
-    @GetMapping
-    public HttpEntity<?> getAllProduct(){
         return productServiceImpl.getAllProductV2();
     }
 

@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
@@ -36,12 +37,16 @@ public class UserManageService {
 
     public void manage(Update update, SendMessage sendMessage,
                        EditMessageText editMessageText, DeleteMessage deleteMessage,
-                       SendLocation sendLocation, SendPhoto sendPhoto, SendDocument sendDocument) {
+                       SendLocation sendLocation, SendPhoto sendPhoto, SendDocument sendDocument, EditMessageReplyMarkup editMessageReplyMarkup) {
         if (update.hasMessage() || update.hasCallbackQuery()) {
-            UserActivityDto userActivityDto = alreadyExistFromService(update.getMessage().getChatId());
-
+            UserActivityDto userActivityDto = null;
+            if (update.hasMessage()) {
+                userActivityDto = alreadyExistFromService(update.getMessage().getChatId());
+            } else if (update.hasCallbackQuery()) {
+                userActivityDto = alreadyExistFromService(update.getCallbackQuery().getMessage().getChatId());
+            }
             if (userActivityDto.getRole().equals(Role.USER)) {
-                userService.main(update, sendMessage, userActivityDto, sendPhoto);
+                userService.main(update, sendMessage, userActivityDto, sendPhoto, editMessageReplyMarkup);
             }
         }
     }
@@ -73,7 +78,7 @@ public class UserManageService {
         new Thread(() -> {
             try {
                 System.out.println("thread start....");
-                Thread.sleep(60*10000);
+                Thread.sleep(60 * 10000);
                 System.out.println("thread end....");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

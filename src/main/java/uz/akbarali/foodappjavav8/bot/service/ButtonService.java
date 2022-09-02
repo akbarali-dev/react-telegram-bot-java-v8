@@ -1,20 +1,20 @@
 package uz.akbarali.foodappjavav8.bot.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
 import uz.akbarali.foodappjavav8.common.GetAllData;
-import uz.akbarali.foodappjavav8.projection.CategoryProjection;
-import uz.akbarali.foodappjavav8.projection.ProductBotProjection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static uz.akbarali.foodappjavav8.bot.util.MessageText.*;
 
@@ -25,6 +25,38 @@ public class ButtonService {
 
     public ButtonService(GetAllData getAllData) {
         this.getAllData = getAllData;
+    }
+
+    public ReplyKeyboard photoInlineButtons(UUID productId, int count) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> inlineBtns = new ArrayList<>();
+        List<InlineKeyboardButton> inlineBtnsRow1 = new ArrayList<>();
+        inlineBtns.add(inlineBtnsRow1);
+        InlineKeyboardButton button = new InlineKeyboardButton();
+
+        button.setText("-");
+        button.setCallbackData("-"+productId);
+        inlineBtnsRow1.add(button);
+
+        button = new InlineKeyboardButton();
+        button.setText(String.valueOf(count));
+        button.setCallbackData("empty");
+        inlineBtnsRow1.add(button);
+
+        button = new InlineKeyboardButton();
+        button.setText("+");
+        button.setCallbackData("+"+productId);
+        inlineBtnsRow1.add(button);
+
+        button = new InlineKeyboardButton();
+        button.setText("\uD83D\uDCE5 Savatga qo'shish");
+        button.setCallbackData("addCard" + productId);
+        inlineBtnsRow1 = new ArrayList<>();
+        inlineBtnsRow1.add(button);
+        inlineBtns.add(inlineBtnsRow1);
+
+        inlineKeyboardMarkup.setKeyboard(inlineBtns);
+        return inlineKeyboardMarkup;
     }
 
     public ReplyKeyboard categoryButtons(Set<String> categories) {

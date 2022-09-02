@@ -16,10 +16,9 @@ import javax.persistence.*;
 @Entity(name = "users")
 public class User extends AbsEntity {
     private String fullName;
+
     private String phoneNumber;
-    @OneToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

@@ -9,6 +9,7 @@ import uz.akbarali.foodappjavav8.model.template.AbsEntity;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
@@ -27,4 +28,10 @@ public class Card extends AbsEntity {
     private double quantity;
 
     private double price;
+
+    private boolean addedCard = false;
+
+    @OneToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
 }
