@@ -135,7 +135,7 @@ public class UserService {
                 sendPhoto.setCaption(caption);
                 sendPhoto.setParseMode("markdown");
                 int count = 1;
-                sendPhoto.setReplyMarkup(buttonService.photoInlineButtons(productByName.getProductId(), count));
+                sendPhoto.setReplyMarkup(buttonService.photoInlineButtons(productByName.getId(), count));
                 sendMessage.setChatId("0");
                 return;
         }

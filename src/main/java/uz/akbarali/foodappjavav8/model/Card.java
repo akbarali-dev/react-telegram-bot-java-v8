@@ -30,6 +30,7 @@ public class Card extends AbsEntity {
     private double price;
 
     private boolean addedCard = false;
+    private boolean success = false;
 
     @OneToOne
     @JoinColumn(name = "location_id")

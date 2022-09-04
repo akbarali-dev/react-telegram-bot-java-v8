@@ -18,6 +18,19 @@ public interface ProductRepository extends BaseRepository<Product> {
 //    List<ProductProjection> getAllProduct();
 
 
+    @Override
+    @Query(nativeQuery = true, value = "select cast(p.id as varchar) as id,\n" +
+            "       p.name_uz             as productName,\n" +
+            "       cast(c.id as varchar) as categoryId,\n" +
+            "       c.name_uz             as categoryName,\n" +
+            "       ac.data               as image,\n" +
+            "       p.price " +
+            "from product p\n" +
+            "         join category c on c.id = p.category_id\n" +
+            "         join attachments a on a.id = p.attachment_id\n" +
+            "         join attachment_contents ac on a.id = ac.attachment_id")
+    List<ProductCategoryBotProjection> getAll();
+
     @Query(nativeQuery = true,
             value = "select cast(p.id as varchar) as id,\n" +
                     "       name_uz               as name,\n" +

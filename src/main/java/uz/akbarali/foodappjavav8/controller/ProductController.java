@@ -31,19 +31,19 @@ public class ProductController {
         this.productService = productService;
         this.productServiceImpl = productServiceImpl;
     }
-    @ApiOperation("hamma category larni olish va category bilan birga productlarni olish")
-    @GetMapping
-    public HttpEntity<?> getAllProduct(){
-
 //    @ApiOperation("hamma category larni olish va category bilan birga productlarni olish")
 //    @GetMapping
-//    public HttpEntity<ApiResponse> getAllProduct(){
-//        return productService.getAllProduct();
+//    public HttpEntity<?> getAllProduct(){
+//        return productServiceImpl.getAllProductV2();
 //    }
 
-
-        return productServiceImpl.getAllProductV2();
+    @ApiOperation("hamma category larni olish va category bilan birga productlarni olish")
+    @GetMapping
+    public HttpEntity<ApiResponse> getAllProduct(){
+        return productService.getAllProduct();
     }
+
+
 
 //    @GetMapping
 //    public HttpEntity<?> getAllProduct(){

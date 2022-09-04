@@ -32,7 +32,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public HttpEntity<ApiResponse> getAllProduct() {
 //        return answerService.answer("SUCCESS", true, productRepository.getAll(), HttpStatus.OK);
-        return answerService.getAllObject(categoryRepository);
+        return answerService.getAllObject(productRepository);
+
 //        return ResponseEntity.status(200).body(productRepository.getAllFoodV2()));
 
 
