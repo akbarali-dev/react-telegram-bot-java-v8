@@ -133,10 +133,10 @@ public class DataLoader implements CommandLineRunner {
 //
 //        System.out.println(forObjectTest);
         while (true) {
-            String forObject = restTemplate.getForObject(
-                    "https://food-telegram-bot-java.herokuapp.com/api/test/hello",
-                    String.class
-            );
+//            String forObject = restTemplate.getForObject(
+//                    "https://food-telegram-bot-java.herokuapp.com/api/test/hello",
+//                    String.class
+//            );
             restTemplate.getForObject(
                     "https://food-react-bot.herokuapp.com/",
                     String.class
