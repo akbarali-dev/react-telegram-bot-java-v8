@@ -17,15 +17,17 @@ public abstract class AbsEntity {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(columnDefinition = "uuid default uuid_generate_v4()")
     private UUID id;
+
 
     @OrderBy
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, columnDefinition = "timestamp default CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "timestamp default CURRENT_TIMESTAMP")
     private Timestamp updatedAt;
 
     public AbsEntity() {

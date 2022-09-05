@@ -14,36 +14,60 @@ import static uz.akbarali.foodappjavav8.bot.util.Util.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class DataLoader implements CommandLineRunner {
-    @Autowired
+    final
     RestTemplate restTemplate;
 
     @Value("${spring.sql.init.mode}")
     String initMode;
-    @Autowired
+    final
     CategoryRepository categoryRepository;
 
-    @Autowired
+    final
     ProductRepository productRepository;
 
-    @Autowired
+    final
     AttachmentRepository attachmentRepository;
 
-    @Autowired
+    final
     AttachmentContentRepository attachmentContentRepository;
-    @Autowired
+    final
     UserManageService userManageService;
 
-    @Autowired
+    final
     Util userUtil;
 
-    @Autowired
+    final
+    CardRepository cardRepository;
+
+    final
     UserActivityRepository userActivityRepository;
+
+    final
+    UserRepository userRepository;
+
+    public DataLoader(RestTemplate restTemplate, CategoryRepository categoryRepository, ProductRepository productRepository, AttachmentRepository attachmentRepository, AttachmentContentRepository attachmentContentRepository, UserManageService userManageService, Util userUtil, UserActivityRepository userActivityRepository, CardRepository cardRepository, UserRepository userRepository) {
+        this.restTemplate = restTemplate;
+        this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+        this.attachmentRepository = attachmentRepository;
+        this.attachmentContentRepository = attachmentContentRepository;
+        this.userManageService = userManageService;
+        this.userUtil = userUtil;
+        this.userActivityRepository = userActivityRepository;
+        this.cardRepository = cardRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public void run(String... args) throws Exception {
+//        final Optional<User> byId = userRepository.findById(UUID.fromString("0392354d-e541-4af7-aca8-f1ddf8e9e506"));
+//        final Optional<Product> byId1 = productRepository.findById(UUID.fromString("2ea099e0-8ff0-4693-a2c6-30165443767a"));
+//        cardRepository.save(new Card(byId1.get(), byId.get(), 1, 100, false, false, null));
 //        for (UserActivity userActivity : userActivityRepository.findAll()) {
 //            System.out.println(userActivity.getChatId() + "; time: " + userActivity.getCreatedAt());
 //        }
@@ -98,7 +122,7 @@ public class DataLoader implements CommandLineRunner {
         runner();
     }
     public void getAllData(){
-        getAllData = productRepository.getAllProductAndCategory();
+        getAllData = productRepository.getAll();
     }
 
     private void runner() throws InterruptedException {

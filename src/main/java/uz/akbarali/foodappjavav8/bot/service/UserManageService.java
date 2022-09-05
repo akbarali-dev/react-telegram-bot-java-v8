@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -37,7 +38,7 @@ public class UserManageService {
 
     public void manage(Update update, SendMessage sendMessage,
                        EditMessageText editMessageText, DeleteMessage deleteMessage,
-                       SendLocation sendLocation, SendPhoto sendPhoto, SendDocument sendDocument, EditMessageReplyMarkup editMessageReplyMarkup) {
+                       SendLocation sendLocation, SendPhoto sendPhoto, SendDocument sendDocument, EditMessageReplyMarkup editMessageReplyMarkup, EditMessageCaption editMessageCaption) {
         if (update.hasMessage() || update.hasCallbackQuery()) {
             UserActivityDto userActivityDto = null;
             if (update.hasMessage()) {
@@ -46,7 +47,7 @@ public class UserManageService {
                 userActivityDto = alreadyExistFromService(update.getCallbackQuery().getMessage().getChatId());
             }
             if (userActivityDto.getRole().equals(Role.USER)) {
-                userService.main(update, sendMessage, userActivityDto, sendPhoto, editMessageReplyMarkup);
+                userService.main(update, sendMessage, userActivityDto, sendPhoto, editMessageReplyMarkup, editMessageCaption);
             }
         }
     }

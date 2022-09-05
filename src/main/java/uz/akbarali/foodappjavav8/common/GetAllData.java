@@ -11,10 +11,7 @@ import static uz.akbarali.foodappjavav8.bot.util.Util.*;
 
 import uz.akbarali.foodappjavav8.bot.util.Util.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class GetAllData {
@@ -30,6 +27,14 @@ public class GetAllData {
     public ProductCategoryBotProjection getProductByName(String productName) {
         for (ProductCategoryBotProjection getAllDatum : getAllData) {
             if (productName.equals(getAllDatum.getProductName())) {
+                return getAllDatum;
+            }
+        }
+        return null;
+    }
+    public ProductCategoryBotProjection getProductById(UUID productId) {
+        for (ProductCategoryBotProjection getAllDatum : getAllData) {
+            if (productId.equals(getAllDatum.getId())) {
                 return getAllDatum;
             }
         }

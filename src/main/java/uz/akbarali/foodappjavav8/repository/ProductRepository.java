@@ -62,20 +62,20 @@ public interface ProductRepository extends BaseRepository<Product> {
             "where c.name_uz = :categoryName or c.name_ru = :categoryName")
     List<ProductBotProjection> getAllByCategoryProductBot(String categoryName);
 
-    @Query(
-            nativeQuery = true,
-            value = "select cast(p.id as varchar) as productId,\n" +
-                    "       p.name_uz             as productName,\n" +
-                    "       cast(c.id as varchar) as categoryId,\n" +
-                    "       c.name_uz             as categoryName,\n" +
-                    "       ac.data               as image,\n" +
-                    "       p.price " +
-                    "from product p\n" +
-                    "         join category c on c.id = p.category_id\n" +
-                    "         join attachments a on a.id = p.attachment_id\n" +
-                    "         join attachment_contents ac on a.id = ac.attachment_id"
-    )
-    List<ProductCategoryBotProjection> getAllProductAndCategory();
+//    @Query(
+//            nativeQuery = true,
+//            value = "select cast(p.id as varchar) as id,\n" +
+//                    "       p.name_uz             as productName,\n" +
+//                    "       cast(c.id as varchar) as categoryId,\n" +
+//                    "       c.name_uz             as categoryName,\n" +
+//                    "       ac.data               as image,\n" +
+//                    "       p.price " +
+//                    "from product p\n" +
+//                    "         join category c on c.id = p.category_id\n" +
+//                    "         join attachments a on a.id = p.attachment_id\n" +
+//                    "         join attachment_contents ac on a.id = ac.attachment_id"
+//    )
+//    List<ProductCategoryBotProjection> getAllProductAndCategory();
 
 
 }
