@@ -28,5 +28,6 @@ public interface CategoryRepository extends BaseRepository<Category> {
 //            "join attachments a on a.id = p.attachment_id\n" +
 //            "join attachment_contents ac on a.id = ac.attachment_id\n" +
 //            "group by c.id")
-//    List<CategoryProjection> getAll();
+//    List<CategoryProjection> getAll1();
+
 }

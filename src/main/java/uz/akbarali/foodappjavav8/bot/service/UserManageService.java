@@ -47,7 +47,7 @@ public class UserManageService {
                 userActivityDto = alreadyExistFromService(update.getCallbackQuery().getMessage().getChatId());
             }
             if (userActivityDto.getRole().equals(Role.USER)) {
-                userService.main(update, sendMessage, userActivityDto, sendPhoto, editMessageReplyMarkup, editMessageCaption);
+                userService.main(update, sendMessage, userActivityDto, sendPhoto, editMessageReplyMarkup, editMessageCaption, deleteMessage);
             }
         }
     }

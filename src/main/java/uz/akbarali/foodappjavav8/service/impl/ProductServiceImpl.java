@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import uz.akbarali.foodappjavav8.dto.ProductDto;
 import uz.akbarali.foodappjavav8.payload.ApiResponse;
+import uz.akbarali.foodappjavav8.projection.ProductCardProjection;
 import uz.akbarali.foodappjavav8.projection.ProductProjection;
 import uz.akbarali.foodappjavav8.repository.CategoryRepository;
 import uz.akbarali.foodappjavav8.repository.ProductRepository;
@@ -39,13 +40,13 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    public HttpEntity<?> getAllProductV2() {
-//        return answerService.answer("SUCCESS", true, productRepository.getAll(), HttpStatus.OK);
-//        return answerService.getAllObject(categoryRepository);
-        return ResponseEntity.status(200).body(productRepository.getAllFoodV2());
-
-
-    }
+//    public HttpEntity<?> getAllProductV2() {
+////        return answerService.answer("SUCCESS", true, productRepository.getAll(), HttpStatus.OK);
+////        return answerService.getAllObject(categoryRepository);
+//        return ResponseEntity.status(200).body(productRepository.getAllFoodV2());
+//
+//
+//    }
 
     @Override
     public HttpEntity<?> getProductById(UUID id) {
@@ -65,8 +66,8 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     Gson gson;
 
-    public List<ProductProjection> allFoods(String foods) {
-        List<ProductProjection> list = gson.fromJson(foods, List.class);
+    public List<ProductCardProjection> allFoods(String foods) {
+        List<ProductCardProjection> list = gson.fromJson(foods, List.class);
         return list;
     }
 

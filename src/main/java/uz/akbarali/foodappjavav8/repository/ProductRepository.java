@@ -42,18 +42,7 @@ public interface ProductRepository extends BaseRepository<Product> {
                     "where p.category_id = :categoryId")
     List<ProductProjection> getAllFood(UUID categoryId);
 
-    @Query(nativeQuery = true,
-    value = "select cast(p.id as varchar) as id,\n" +
-            "       p.name_uz             as name,\n" +
-            "       price,\n" +
-            "       ac.data               as image,\n" +
-            "       c.name_uz as category\n" +
-            "\n" +
-            "from product p\n" +
-            "         join attachments a on a.id = p.attachment_id\n" +
-            "         join attachment_contents ac on a.id = ac.attachment_id\n" +
-            "         join category c on c.id = p.category_id")
-    List<ProductProjectionV2> getAllFoodV2();
+;
 
     @Query(nativeQuery = true,
     value = "select p.name_uz as name\n" +

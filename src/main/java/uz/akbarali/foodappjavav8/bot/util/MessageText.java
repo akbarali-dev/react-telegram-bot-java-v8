@@ -21,4 +21,5 @@ public class MessageText {
     public static final String emptyProductUz = "Product hali mavjud emas";
     public static final String errorMessageUz = "Xato buyruq";
     public static final String selectMenuUz = "Menulardan birini tanlang";
+    public static final String myCardUz = "\uD83D\uDCE5 Savat";
 }

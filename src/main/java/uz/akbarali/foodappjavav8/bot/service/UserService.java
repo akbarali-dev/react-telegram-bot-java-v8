@@ -3,6 +3,7 @@ package uz.akbarali.foodappjavav8.bot.service;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -12,6 +13,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import uz.akbarali.foodappjavav8.bot.dto.UserActivityDto;
 import uz.akbarali.foodappjavav8.common.GetAllData;
+import uz.akbarali.foodappjavav8.projection.CategoryProductBotProjection;
+import uz.akbarali.foodappjavav8.projection.ProductCardProjection;
 import uz.akbarali.foodappjavav8.projection.ProductCategoryBotProjection;
 import uz.akbarali.foodappjavav8.repository.CardRepository;
 import uz.akbarali.foodappjavav8.repository.CategoryRepository;
@@ -48,24 +51,38 @@ public class UserService {
         this.cardRepository = cardRepository;
     }
 
-    public void main(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, SendPhoto sendPhoto, EditMessageReplyMarkup editMessageReplyMarkup, EditMessageCaption editMessageCaption) {
+    public void main(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, SendPhoto sendPhoto, EditMessageReplyMarkup editMessageReplyMarkup, EditMessageCaption editMessageCaption, DeleteMessage deleteMessage) {
         if (update.hasMessage()) {
             mainTextMessage(update, sendMessage, userActivityDto, sendPhoto);
         } else if (update.hasCallbackQuery()) {
-            mainCallBackMessage(update, sendMessage, userActivityDto, editMessageReplyMarkup, editMessageCaption);
+            mainCallBackMessage(update, sendMessage, userActivityDto, editMessageReplyMarkup, editMessageCaption, deleteMessage);
         }
     }
 
-    private void mainCallBackMessage(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, EditMessageReplyMarkup editMessageReplyMarkup, EditMessageCaption editMessageCaption) {
+    private void mainCallBackMessage(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, EditMessageReplyMarkup editMessageReplyMarkup, EditMessageCaption editMessageCaption, DeleteMessage deleteMessage) {
         CallbackQuery callbackQuery = update.getCallbackQuery();
         String data = callbackQuery.getData();
         Integer messageId = callbackQuery.getMessage().getMessageId();
         Long chatId = callbackQuery.getMessage().getChatId();
 //        sendMessage.setChatId(chatId.toString());
+
+        if (data.startsWith("empty"))
+            return;
+
+        if (userActivityDto.getRound() == 3) {
+            if (data.startsWith("add")) {
+                deleteMessage.setChatId(chatId.toString());
+                deleteMessage.setMessageId(messageId);
+                sendMessage.setChatId(chatId.toString());
+                showCategory(sendMessage, userActivityDto);
+                return;
+            }
+
+
+            return;
+        }
         if (userActivityDto.getRound() == 2) {
-            editMessageReplyMarkup.setMessageId(messageId);
             editMessageCaption.setParseMode("markdown");
-//            editMessageReplyMarkup.setChatId(chatId.toString());
 //            sendMessage.setText("0");
             if (data.startsWith("+")) {
                 editMessageCaption.setChatId(chatId.toString());
@@ -76,7 +93,7 @@ public class UserService {
                 Integer count = cardRepository.getUserOrderCountIncrement(chatId, productId);
                 editMessageCaption.setCaption(photoCaption(getAllData.getProductById(productId), count));
 //                editMessageReplyMarkup.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count));
-                editMessageCaption.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count));
+                editMessageCaption.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count, true));
                 return;
             } else if (data.startsWith("-")) {
                 editMessageCaption.setChatId(chatId.toString());
@@ -85,14 +102,23 @@ public class UserService {
                 System.out.println(data.substring(1));
                 Integer count = cardRepository.getUserOrderCountDecrement(chatId, productId);
                 editMessageCaption.setCaption(photoCaption(getAllData.getProductById(productId), count));
-                editMessageCaption.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count));
+                editMessageCaption.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count, true));
 //                editMessageReplyMarkup.setReplyMarkup();
                 return;
 
-            } else if (data.startsWith("empty")) {
-                return;
             } else if (data.startsWith("addCard")) {
-                sendMessage.setText("addCard");
+                UUID productId = UUID.fromString(data.substring(7));
+                Integer count = cardRepository.addOrRemoveProductFromCard(chatId, productId, true);
+                editMessageReplyMarkup.setMessageId(messageId);
+                editMessageReplyMarkup.setChatId(chatId.toString());
+                editMessageReplyMarkup.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count, false));
+                return;
+            } else if (data.startsWith("remove")) {
+                UUID productId = UUID.fromString(data.substring(6));
+                Integer count = cardRepository.addOrRemoveProductFromCard(chatId, productId, false);
+                editMessageReplyMarkup.setMessageId(messageId);
+                editMessageReplyMarkup.setChatId(chatId.toString());
+                editMessageReplyMarkup.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count, true));
                 return;
             }
         }
@@ -123,6 +149,18 @@ public class UserService {
             case contactUz:
                 sendMessage.setText(contactUz + " hali ish jarayonida");
                 return;
+            case myCardUz:
+                List<CategoryProductBotProjection> allCard = cardRepository.getAllCard(chatId);
+                if (allCard.size() == 0) {
+                    sendMessage.setText("hech narsa yo'q");
+                    return;
+                }
+                final String cardData = cardDataSortedMessage(allCard);
+                sendMessage.setText(cardData);
+                sendMessage.setReplyMarkup(buttonService.cardButtons(allCard));
+                sendMessage.setParseMode("markdown");
+                userActivityDto.setRound(3);
+                return;
             case languageUz:
             case languageRu:
                 sendMessage.setText(languageRu + " hali ish jarayonida");
@@ -152,11 +190,33 @@ public class UserService {
                 String caption = photoCaption(productByName, count);
                 sendPhoto.setCaption(caption);
                 sendPhoto.setParseMode("markdown");
-                sendPhoto.setReplyMarkup(buttonService.photoInlineButtons(productByName.getId(), count));
+                sendPhoto.setReplyMarkup(buttonService.photoInlineButtons(productByName.getId(), count, true));
                 sendMessage.setChatId("0");
                 return;
         }
 
+    }
+
+    private String cardDataSortedMessage(List<CategoryProductBotProjection> allCard) {
+        StringBuilder cardData = new StringBuilder();
+        float totalPrice = 0;
+        float price = 0;
+        for (CategoryProductBotProjection category : allCard) {
+            cardData.append("*").append(category.getName()).append(":*\n");
+            for (ProductCardProjection food : category.getFoods()) {
+                price += food.getPrice() * (float) food.getQuantity();
+                cardData.append("└ *").append(food.getName()).append("   *")
+                        .append(food.getQuantity())
+                        .append(" x ").append(food.getPrice()).append(" = ")
+                        .append(price).append("\n");
+                totalPrice += price;
+                price = 0;
+            }
+            cardData.append("\n");
+        }
+        cardData.append("\n*\uD83D\uDE9BYetkaib berish:*  ").append("10 000\n");
+        cardData.append("*\uD83D\uDCB8Umumiy:*  ").append(totalPrice + 10000);
+        return String.valueOf(cardData);
     }
 
     private String photoCaption(ProductCategoryBotProjection product, int count) {
@@ -167,10 +227,10 @@ public class UserService {
     }
 
     private void showCategory(SendMessage sendMessage, UserActivityDto userActivityDto) {
-        if (userActivityDto.getRound() != 0) {
-            sendMessage.setText(errorMessageUz);
-            return;
-        }
+//        if (userActivityDto.getRound() != 0) {
+//            sendMessage.setText(errorMessageUz);
+//            return;
+//        }
         final Set<String> allCategory = getAllData.getAllCategory();
         if (allCategory.size() == 0) {
             sendMessage.setText(emptyCategoryUz);

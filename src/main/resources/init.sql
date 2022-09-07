@@ -35,6 +35,11 @@ BEGIN
                        where ua.chat_id = user_chat_id
                          and p.id = select_product_id
                          and c.success = false);
+
+    if select_card_id is null then
+        return user_order_count;
+    end if;
+
     update card c2
     set quantity = user_order_count + 1
     where c2.id = select_card_id;

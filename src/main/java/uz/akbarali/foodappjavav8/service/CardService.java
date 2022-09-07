@@ -13,7 +13,7 @@ public interface CardService {
 
     HttpEntity<?> getCardById(UUID id);
 
-    HttpEntity<?> saveCard(CardDto productDto, Errors error);
+    HttpEntity<ApiResponse> saveCard(CardDto productDto, Errors error);
 
     HttpEntity<?> deleteCardById(UUID id);
 }

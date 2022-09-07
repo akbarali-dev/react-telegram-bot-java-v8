@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -48,8 +49,9 @@ public class Bot extends TelegramLongPollingBot {
         SendPhoto sendPhoto = new SendPhoto();
         EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
         EditMessageCaption editMessageCaption = new EditMessageCaption();
+        DeleteMessage deleteMessage = new DeleteMessage();
         userManageService.manage(update, sendMessage, null,
-                null, null,
+                deleteMessage, null,
                 sendPhoto, null, editMessageReplyMarkup, editMessageCaption);
         try {
             if (sendMessage.getChatId() != null && !sendMessage.getChatId().equals("0")) {
@@ -62,6 +64,8 @@ public class Bot extends TelegramLongPollingBot {
             }
             if (editMessageCaption.getChatId()!=null && !editMessageCaption.getChatId().equals("0"))
                 execute(editMessageCaption);
+            if (deleteMessage.getMessageId()!=null && !deleteMessage.getChatId().equals("0"))
+                execute(deleteMessage);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }

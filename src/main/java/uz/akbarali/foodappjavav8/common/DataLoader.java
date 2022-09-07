@@ -82,9 +82,9 @@ public class DataLoader implements CommandLineRunner {
 //        System.out.println(userUtil.activityMap.get(234L).getRound());
 
         if (initMode.equals("always")) {
-            final Category saveCategoryFood = categoryRepository.save(new Category("food", "food"));
-            final Category saveCategoryWater = categoryRepository.save(new Category("water", "water"));
-            final Category saveCategoryDessert = categoryRepository.save(new Category("dessert", "dessert"));
+            final Category saveCategoryFood = categoryRepository.save(new Category("Food", "food"));
+            final Category saveCategoryWater = categoryRepository.save(new Category("Water", "water"));
+            final Category saveCategoryDessert = categoryRepository.save(new Category("Dessert", "dessert"));
 
             byte[] byteBurger = savedImage("src/main/resources/images/burger.png");
             byte[] byteCoca = savedImage("src/main/resources/images/coca.png");
