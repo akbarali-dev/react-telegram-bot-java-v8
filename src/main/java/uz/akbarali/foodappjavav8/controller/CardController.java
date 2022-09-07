@@ -13,7 +13,7 @@ import uz.akbarali.foodappjavav8.service.CardService;
 
 import javax.validation.Valid;
 
-@RequestMapping
+@RequestMapping("/api/v1/card")
 @RestController
 public class CardController {
     @Autowired
