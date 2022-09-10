@@ -51,6 +51,14 @@ public interface ProductRepository extends BaseRepository<Product> {
             "where c.name_uz = :categoryName or c.name_ru = :categoryName")
     List<ProductBotProjection> getAllByCategoryProductBot(String categoryName);
 
+    @Query(nativeQuery = true,
+    value = "select cast(id as varchar) from product")
+    List<UUID> getAllId();
+
+
+
+
+
 //    @Query(
 //            nativeQuery = true,
 //            value = "select cast(p.id as varchar) as id,\n" +

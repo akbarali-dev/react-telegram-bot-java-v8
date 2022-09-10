@@ -1,5 +1,6 @@
 package uz.akbarali.foodappjavav8.bot.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -21,13 +22,12 @@ import java.util.UUID;
 import static uz.akbarali.foodappjavav8.bot.util.MessageText.*;
 
 @Service
+@RequiredArgsConstructor
 public class ButtonService {
     final
     GetAllData getAllData;
 
-    public ButtonService(GetAllData getAllData) {
-        this.getAllData = getAllData;
-    }
+
 
     public ReplyKeyboard cardButtons(List<CategoryProductBotProjection> allCard) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -39,7 +39,7 @@ public class ButtonService {
             for (ProductCardProjection food : category.getFoods()) {
                 button = new InlineKeyboardButton();
                 button.setText("➕");
-                button.setCallbackData("+"+food.getCardId());
+                button.setCallbackData("#+"+food.getCardId());
                 inlineBtnsRow1.add(button);
                 button=new InlineKeyboardButton();
                 button.setText(food.getName());
@@ -47,7 +47,7 @@ public class ButtonService {
                 inlineBtnsRow1.add(button);
                 button=new InlineKeyboardButton();
                 button.setText("➖");
-                button.setCallbackData("-"+food.getCardId());
+                button.setCallbackData("#-"+food.getCardId());
                 inlineBtnsRow1.add(button);
                 inlineBtns.add(inlineBtnsRow1);
                 inlineBtnsRow1 = new ArrayList<>();

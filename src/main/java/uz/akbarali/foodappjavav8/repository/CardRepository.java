@@ -1,6 +1,7 @@
 package uz.akbarali.foodappjavav8.repository;
 
 import org.springframework.data.jpa.repository.Query;
+import uz.akbarali.foodappjavav8.dto.TestDto;
 import uz.akbarali.foodappjavav8.model.Card;
 import uz.akbarali.foodappjavav8.projection.CategoryProductBotProjection;
 import uz.akbarali.foodappjavav8.repository.base.BaseRepository;
@@ -19,6 +20,10 @@ public interface CardRepository extends BaseRepository<Card> {
     @Query(nativeQuery = true, value = "select add_or_remove_card(:added, :productId, :chatId);")
     Integer addOrRemoveProductFromCard(Long chatId, UUID productId, boolean added);
 
+    @Query(nativeQuery = true, value = "select clearCardAndReturnChatId(:userId)")
+    Long clearCardAndReturnChatId(UUID userId);
+
+
     @Query(nativeQuery = true, value = "select c.name_uz as name,\n" +
             "       cast(json_agg(json_build_object('id', p.id, 'name', p.name_uz, 'price', p.price, 'quantity', c2.quantity, 'cardId', c2.id)) as text) as foods\n" +
             "from category c\n" +
@@ -30,7 +35,7 @@ public interface CardRepository extends BaseRepository<Card> {
             "group by c.id")
     List<CategoryProductBotProjection> getAllCard(Long chatId);
 
-
-
+    @Query(nativeQuery = true, value = "select * from increment_or_decrement_user_order_count_and_return_card(:cardId, :chatId, :isIncrement);")
+    List<CategoryProductBotProjection> getAllCard(UUID cardId, Long chatId, boolean isIncrement);
 
 }

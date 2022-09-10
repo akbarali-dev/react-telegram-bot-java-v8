@@ -1,5 +1,8 @@
 package uz.akbarali.foodappjavav8.bot;
 
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -9,13 +12,19 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import uz.akbarali.foodappjavav8.bot.service.ButtonService;
 import uz.akbarali.foodappjavav8.bot.service.UserManageService;
 
 @Component
+@RequiredArgsConstructor
+
 public class Bot extends TelegramLongPollingBot {
+
+
+
     @Value("${telegram.bot.username}")
     String botUsername;
 
@@ -23,14 +32,13 @@ public class Bot extends TelegramLongPollingBot {
     @Value("${telegram.bot.token}")
     String botToken;
 
-    final
-    ButtonService buttonService;
-    final UserManageService userManageService;
+    private final ButtonService buttonService;
 
-    public Bot(ButtonService buttonService, UserManageService userManageService) {
-        this.buttonService = buttonService;
-        this.userManageService = userManageService;
-    }
+    private final UserManageService userManageService;
+
+
+
+
 
 
     @Override
@@ -50,7 +58,8 @@ public class Bot extends TelegramLongPollingBot {
         EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
         EditMessageCaption editMessageCaption = new EditMessageCaption();
         DeleteMessage deleteMessage = new DeleteMessage();
-        userManageService.manage(update, sendMessage, null,
+        EditMessageText editMessageText = new EditMessageText();
+        userManageService.manage(update, sendMessage, editMessageText,
                 deleteMessage, null,
                 sendPhoto, null, editMessageReplyMarkup, editMessageCaption);
         try {
@@ -62,6 +71,8 @@ public class Bot extends TelegramLongPollingBot {
             if (editMessageReplyMarkup.getChatId() != null && !editMessageReplyMarkup.getChatId().equals("0")) {
                 execute(editMessageReplyMarkup);
             }
+            if (editMessageText.getChatId()!=null && !editMessageText.getChatId().equals("0"))
+                execute(editMessageText);
             if (editMessageCaption.getChatId()!=null && !editMessageCaption.getChatId().equals("0"))
                 execute(editMessageCaption);
             if (deleteMessage.getMessageId()!=null && !deleteMessage.getChatId().equals("0"))
@@ -81,5 +92,13 @@ public class Bot extends TelegramLongPollingBot {
 //        } catch (TelegramApiException e) {
 //            throw new RuntimeException(e);
 //        }
+    }
+
+    @SneakyThrows
+    public void confirmationOrder(Long chatId){
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId.toString());
+        sendMessage.setText("success order");
+        execute(sendMessage);
     }
 }

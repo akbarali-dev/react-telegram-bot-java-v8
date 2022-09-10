@@ -21,14 +21,21 @@ import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    @Autowired
+    final
     ProductRepository productRepository;
 
-    @Autowired
+    final
     AnswerService answerService;
 
-    @Autowired
+    final
     CategoryRepository categoryRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository, AnswerService answerService, CategoryRepository categoryRepository, Gson gson) {
+        this.productRepository = productRepository;
+        this.answerService = answerService;
+        this.categoryRepository = categoryRepository;
+        this.gson = gson;
+    }
 
     @Override
     public HttpEntity<ApiResponse> getAllProduct() {
@@ -63,12 +70,29 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
-    @Autowired
+    final
     Gson gson;
 
     public List<ProductCardProjection> allFoods(String foods) {
         List<ProductCardProjection> list = gson.fromJson(foods, List.class);
         return list;
+    }
+
+    public boolean existByAllId(List<UUID> ids) {
+        List<UUID> allId = productRepository.getAllId();
+        int count = 0;
+        for (UUID id : ids) {
+            for (UUID uuid : allId) {
+                if (id.equals(uuid)) {
+                    allId.remove(uuid);
+                    count++;
+                    if (ids.size() == count)
+                        return true;
+                    break;
+                }
+            }
+        }
+        return count == ids.size();
     }
 
 

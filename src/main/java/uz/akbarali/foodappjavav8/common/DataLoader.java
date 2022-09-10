@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import uz.akbarali.foodappjavav8.bot.service.UserManageService;
 import uz.akbarali.foodappjavav8.bot.util.Util;
+import uz.akbarali.foodappjavav8.dto.TestDto;
 import uz.akbarali.foodappjavav8.model.*;
 import uz.akbarali.foodappjavav8.repository.*;
 import static uz.akbarali.foodappjavav8.bot.util.Util.*;
@@ -14,8 +15,7 @@ import static uz.akbarali.foodappjavav8.bot.util.Util.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -80,6 +80,13 @@ public class DataLoader implements CommandLineRunner {
 //        Thread.sleep(700);
 //        System.out.println("700 thread ended ...");
 //        System.out.println(userUtil.activityMap.get(234L).getRound());
+//        List<TestDto> testDtos = new ArrayList<>(Arrays.asList(
+//                new TestDto(UUID.fromString("00f2b940-c815-4563-a5e0-af65430cbb62"), 2),
+//                new TestDto(UUID.fromString("5c7ef340-35c4-488f-b0e3-ae91a4f2d4e4"), 3),
+//                new TestDto(UUID.fromString("86a77e63-e314-408e-9fd6-43622f531e7d"), 66),
+//                new TestDto(UUID.fromString("b45cd7d3-9471-4536-97f0-00ef0d6f4f7b"), 33)
+//        ));
+//        final Boolean aBoolean = cardRepository.testSqlFunction(testDtos, testDtos.size());
 
         if (initMode.equals("always")) {
             final Category saveCategoryFood = categoryRepository.save(new Category("Food", "food"));
@@ -133,10 +140,10 @@ public class DataLoader implements CommandLineRunner {
 //
 //        System.out.println(forObjectTest);
         while (true) {
-//            String forObject = restTemplate.getForObject(
-//                    "https://food-telegram-bot-java.herokuapp.com/api/test/hello",
-//                    String.class
-//            );
+            String forObject = restTemplate.getForObject(
+                    "https://java-telegram-food-bot.herokuapp.com/api/test/hello",
+                    String.class
+            );
             restTemplate.getForObject(
                     "https://food-react-bot.herokuapp.com/",
                     String.class

@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -22,6 +23,7 @@ import uz.akbarali.foodappjavav8.repository.ProductRepository;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -51,23 +53,22 @@ public class UserService {
         this.cardRepository = cardRepository;
     }
 
-    public void main(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, SendPhoto sendPhoto, EditMessageReplyMarkup editMessageReplyMarkup, EditMessageCaption editMessageCaption, DeleteMessage deleteMessage) {
+    public void main(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, SendPhoto sendPhoto, EditMessageReplyMarkup editMessageReplyMarkup, EditMessageCaption editMessageCaption, DeleteMessage deleteMessage, EditMessageText editMessageText) {
         if (update.hasMessage()) {
             mainTextMessage(update, sendMessage, userActivityDto, sendPhoto);
         } else if (update.hasCallbackQuery()) {
-            mainCallBackMessage(update, sendMessage, userActivityDto, editMessageReplyMarkup, editMessageCaption, deleteMessage);
+            mainCallBackMessage(update, sendMessage, userActivityDto, editMessageReplyMarkup, editMessageCaption, deleteMessage, editMessageText);
         }
     }
 
-    private void mainCallBackMessage(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, EditMessageReplyMarkup editMessageReplyMarkup, EditMessageCaption editMessageCaption, DeleteMessage deleteMessage) {
+    private void mainCallBackMessage(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, EditMessageReplyMarkup editMessageReplyMarkup, EditMessageCaption editMessageCaption, DeleteMessage deleteMessage, EditMessageText editMessageText) {
         CallbackQuery callbackQuery = update.getCallbackQuery();
         String data = callbackQuery.getData();
         Integer messageId = callbackQuery.getMessage().getMessageId();
         Long chatId = callbackQuery.getMessage().getChatId();
-//        sendMessage.setChatId(chatId.toString());
-
         if (data.startsWith("empty"))
             return;
+
 
         if (userActivityDto.getRound() == 3) {
             if (data.startsWith("add")) {
@@ -77,33 +78,39 @@ public class UserService {
                 showCategory(sendMessage, userActivityDto);
                 return;
             }
-
-
+            if (data.startsWith("#")) {
+                editMessageText.setChatId(chatId.toString());
+                editMessageText.setMessageId(messageId);
+                editMessageText.setParseMode("markdown");
+                String n = data;
+                UUID cardId = UUID.fromString(data.substring(2));
+                List<CategoryProductBotProjection> allCard = new ArrayList<>();
+                if (n.startsWith("#+")) {
+                    allCard = cardRepository.getAllCard(cardId, chatId, true);
+                } else if (n.startsWith("#-")) {
+                    allCard = cardRepository.getAllCard(cardId, chatId, false);
+                    if (allCard.size() == 0) {
+                        deleteMessage.setChatId(chatId.toString());
+                        deleteMessage.setMessageId(messageId);
+                        return;
+                    }
+                }
+                editMessageText.setReplyMarkup((InlineKeyboardMarkup) buttonService.cardButtons(allCard));
+                String cardData = cardDataSortedMessage(allCard);
+                editMessageText.setText(cardData);
+//                editMessageReplyMarkup.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count));
+                return;
+            }
             return;
         }
         if (userActivityDto.getRound() == 2) {
             editMessageCaption.setParseMode("markdown");
 //            sendMessage.setText("0");
             if (data.startsWith("+")) {
-                editMessageCaption.setChatId(chatId.toString());
-                editMessageCaption.setMessageId(messageId);
-                sendMessage.setText("+");
-                UUID productId = UUID.fromString(data.substring(1));
-                System.out.println(data.substring(1));
-                Integer count = cardRepository.getUserOrderCountIncrement(chatId, productId);
-                editMessageCaption.setCaption(photoCaption(getAllData.getProductById(productId), count));
-//                editMessageReplyMarkup.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count));
-                editMessageCaption.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count, true));
+                incrementSelectProductCount(editMessageCaption, data, messageId, chatId);
                 return;
             } else if (data.startsWith("-")) {
-                editMessageCaption.setChatId(chatId.toString());
-                editMessageCaption.setMessageId(messageId);
-                UUID productId = UUID.fromString(data.substring(1));
-                System.out.println(data.substring(1));
-                Integer count = cardRepository.getUserOrderCountDecrement(chatId, productId);
-                editMessageCaption.setCaption(photoCaption(getAllData.getProductById(productId), count));
-                editMessageCaption.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count, true));
-//                editMessageReplyMarkup.setReplyMarkup();
+                decrementSelectProductCount(editMessageCaption, data, messageId, chatId);
                 return;
 
             } else if (data.startsWith("addCard")) {
@@ -122,6 +129,27 @@ public class UserService {
                 return;
             }
         }
+    }
+
+    private void decrementSelectProductCount(EditMessageCaption editMessageCaption, String data, Integer messageId, Long chatId) {
+        editMessageCaption.setChatId(chatId.toString());
+        editMessageCaption.setMessageId(messageId);
+        UUID productId = UUID.fromString(data.substring(1));
+        System.out.println(data.substring(1));
+        Integer count = cardRepository.getUserOrderCountDecrement(chatId, productId);
+        editMessageCaption.setCaption(photoCaption(getAllData.getProductById(productId), count));
+        editMessageCaption.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count, true));
+//                editMessageReplyMarkup.setReplyMarkup();
+    }
+
+    private void incrementSelectProductCount(EditMessageCaption editMessageCaption, String data, Integer messageId, Long chatId) {
+        editMessageCaption.setChatId(chatId.toString());
+        editMessageCaption.setMessageId(messageId);
+        UUID productId = UUID.fromString(data.substring(1));
+        Integer count = cardRepository.getUserOrderCountIncrement(chatId, productId);
+        editMessageCaption.setCaption(photoCaption(getAllData.getProductById(productId), count));
+//                editMessageReplyMarkup.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count));
+        editMessageCaption.setReplyMarkup((InlineKeyboardMarkup) buttonService.photoInlineButtons(productId, count, true));
     }
 
     private void mainTextMessage(Update update, SendMessage sendMessage, UserActivityDto userActivityDto, SendPhoto sendPhoto) {
@@ -220,10 +248,10 @@ public class UserService {
     }
 
     private String photoCaption(ProductCategoryBotProjection product, int count) {
-        String caption = "*Categoriya:* " + product.getCategoryName() + "\n" +
+        return "*Categoriya:* " + product.getCategoryName() + "\n" +
                 "*Nomi:* " + product.getProductName() + "\n" +
                 "*Narxi*: " + count + " x " + product.getPrice() + " = " + ((float) count * product.getPrice());
-        return caption;
+
     }
 
     private void showCategory(SendMessage sendMessage, UserActivityDto userActivityDto) {
