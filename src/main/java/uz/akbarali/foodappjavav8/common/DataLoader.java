@@ -145,7 +145,7 @@ public class DataLoader implements CommandLineRunner {
                     String.class
             );
             restTemplate.getForObject(
-                    "https://food-react-bot.herokuapp.com/",
+                    "https://react-telegram-bot-1.herokuapp.com/",
                     String.class
             );
 //            System.out.println(forObject);

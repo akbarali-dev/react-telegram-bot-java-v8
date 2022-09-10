@@ -154,8 +154,8 @@ public class ButtonService {
             case 0:
                 row = new KeyboardRow();
                 String orderId = "12345";
-//                WebAppInfo webAppInfo = new WebAppInfo("https://food-react-bot.herokuapp.com/");
-                WebAppInfo webAppInfo = new WebAppInfo("https://food-react-app-bot.herokuapp.com/order?orderId=" + orderId);
+                WebAppInfo webAppInfo = new WebAppInfo("https://react-telegram-bot-1.herokuapp.com/");
+//                WebAppInfo webAppInfo = new WebAppInfo("https://food-react-app-bot.herokuapp.com/order?orderId=" + orderId);
                 KeyboardButton btn = new KeyboardButton();
                 btn.setWebApp(webAppInfo);
                 btn.setText(menuNewUz);
